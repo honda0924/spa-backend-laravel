@@ -24,7 +24,13 @@ class UpdateTaskRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'required'
+            'title' => 'required|max:255'
+        ];
+    }
+    public function attributes()
+    {
+        return [
+            'title' => 'タイトル'
         ];
     }
 }

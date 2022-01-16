@@ -59,8 +59,59 @@ class TaskTest extends TestCase
 
         $response = $this->getJson('api/tasks');
         $response->assertJsonCount($tasks->count() - 1);
-
-
-        // ->assertJsonFragment($task->toArray());
+    }
+    /**
+     * @test
+     */
+    public function failNoTitleRegister()
+    {
+        $data = [
+            'title' => ''
+        ];
+        $response = $this->postJson('api/tasks', $data);
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors([
+                'title' => 'タイトルは、必ず指定してください。'
+            ]);
+    }
+    /**
+     * @test
+     */
+    public function failOverMaxCharTitleRegister()
+    {
+        $data = [
+            'title' => str_repeat('あ', 256)
+        ];
+        $response = $this->postJson('api/tasks', $data);
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors([
+                'title' => 'タイトルは、255文字以下にしてください。'
+            ]);
+    }
+    /**
+     * @test
+     */
+    public function failNoTitleUpdate()
+    {
+        $task = Task::factory()->create();
+        $task->title = '';
+        $response = $this->patchJson("api/tasks/{$task->id}", $task->toArray());
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors([
+                'title' => 'タイトルは、必ず指定してください。'
+            ]);
+    }
+    /**
+     * @test
+     */
+    public function failOverMaxCharTitleUpdate()
+    {
+        $task = Task::factory()->create();
+        $task->title = str_repeat('あ', 256);
+        $response = $this->patchJson("api/tasks/{$task->id}", $task->toArray());
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors([
+                'title' => 'タイトルは、255文字以下にしてください。'
+            ]);
     }
 }
