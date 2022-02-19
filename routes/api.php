@@ -14,12 +14,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-<<<<<<< Updated upstream
-Route::apiResource('tasks', 'TaskController');
-=======
 ROute::post('login', 'LoginController@login');
 ROute::post('logout', 'LoginController@logout');
->>>>>>> Stashed changes
 
 Route::group(['middleware' => 'auth:sanctum'], function(){
     Route::apiResource('tasks', 'TaskController');
